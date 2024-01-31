@@ -39,6 +39,9 @@
 			<td colspan="2">中衛</td>
 			<td colspan="2">後衛</td>
 		</tr>
+		<tr id="selectRow">
+			<!-- 選択ボックスはJavaScriptで動的に生成 -->
+		</tr>
 		<tr id="imageRow">
 			<!-- 画像はJavaScriptで動的に生成 -->
 		</tr>
@@ -59,6 +62,8 @@
 		fetch('images.json')
 			.then(response => response.json())
 			.then(images => {
+				
+			const selectRow = document.getElementById('selectRow')
 			
 			const imageTab = document.getElementById('imageTab');
 			const imageTabContent = document.getElementById('imageTabContent');
@@ -106,7 +111,31 @@
 			});
 					
 			for (let i = 0; i < 6; i++) {
+				// 選択ボックスの生成
+    const selectCell = document.createElement('td');
+				const select = document.createElement('select');
+				select.id = 'imageSelect' + i;
 				
+				// グループ名を取得
+    const groupNames = [...new Set(images.map(image => image.group))];
+				
+				groupNames.forEach(groupName => {
+					// グループの生成
+     const optgroup = document.createElement('optgroup');
+				 optgroup.label = groupName;  // グループ名を設定
+     // 同じグループの画像を取得
+     const groupImages = images.filter(image => image.group === groupName);
+     groupImages.forEach(image => {
+	     const option = document.createElement('option');
+	     option.value = image.url;
+	     option.textContent = image.name;
+				  optgroup.appendChild(option);  // オプションをグループに追加
+     });
+     select.appendChild(optgroup);  // グループを選択ボックスに追加
+    });
+    selectCell.appendChild(select);
+    selectRow.appendChild(selectCell)
+
 				// 画像の生成
 				const imageCell = document.createElement('td');
 				const img = document.createElement('img');
