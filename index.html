@@ -109,8 +109,7 @@
 				const imageCell = document.createElement('td');
 				const img = document.createElement('img');
 				img.id = 'selectedImage' + i;
-				let filteredImages = images.filter(image => image.group === group);
-				img.src = filteredImages[i].set[0].url;  // 初期画像の設定
+				img.src = images[i * 8].url;  // 初期画像の設定
 				img.alt = '選択した画像';
 				img.style.maxHeight = '100%';
 				img.style.maxWidth = '100%';
