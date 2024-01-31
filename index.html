@@ -63,6 +63,7 @@
 				const tab = document.createElement('li');
 				tab.className = 'nav-item';
 				const link = document.createElement('a');
+				
 				link.className = 'nav-link btn btn-primary' + (i === 0 ? ' active' : '');  // 最初のタブをアクティブに設定
 				link.id = 'tab-' + group;
 				link.href = '#content-' + group;
@@ -122,17 +123,19 @@
 		
 		// タブのクリックイベント
 		imageTab.addEventListener('click', function(event) {
-		  event.preventDefault();  // デフォルトのリンククリック動作を防ぐ
+			event.preventDefault();  // デフォルトのリンククリック動作を防ぐ
 		
-		  // 全てのタブから 'show active' クラスを削除
-		  const tabs = document.getElementsByClassName('tab-pane');
-		  for (let tab of tabs) {
-		    tab.className = tab.className.replace(' show active', '');
-		  }
+			// 全てのタブから 'show active' クラスを削除
+			const tabs = document.getElementsByClassName('tab-pane');
+			for (let tab of tabs) {
+				tab.className = tab.className.replace(' show active', '');
+			}
 		
-		  // クリックされたタブに 'show active' クラスを設定
-		  const content = document.getElementById('content-' + group);
-		  content.className += ' show active';
+			// クリックされたタブに 'show active' クラスを設定
+			const clickedTab = event.target;
+			const contentId = clickedTab.href.split('#')[1];
+			const content = document.getElementById(contentId);
+			content.className += ' show active';
 		});
 	</script>
 </body>
