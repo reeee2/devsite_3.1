@@ -133,7 +133,8 @@
 		
 			// クリックされたタブに 'show active' クラスを設定
 			const clickedTab = event.target;
-			const contentId = clickedTab.href.split('#')[1];
+			const contentId = decodeURIComponent(clickedTab.href.split('#')[1]);
+			
 			const content = document.getElementById(contentId);
 			content.className += ' show active';
 		});
