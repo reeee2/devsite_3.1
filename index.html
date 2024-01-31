@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>画像選択</title>
-  <style>
-    #myTable {
+	<title>画像選択</title>
+	<style>
+		#myTable {
 			width: 100%;
 			height: 200px;
 			border: 1px solid black;
@@ -11,78 +11,86 @@
 			text-align: center;
 		}
 		#myTable td {
+			width: 16.67%;
 			border: 1px solid black;  /* 各セルに線を追加 */
 			border-collapse: collapse;
 		}
 		#myTable td:nth-child(2n) {
 			border-right: 2px solid black;  /* 2列ごとに線を追加 */
 		}
-  </style>
+	</style>
 </head>
 <body>
-  <table id="myTable">
-    <tr id="headerRow">
+	<table id="myTable">
+		<tr id="headerRow">
 			<!-- ヘッダー行を追加 -->
 			<td colspan="2">前衛</td>
 			<td colspan="2">中衛</td>
 			<td colspan="2">後衛</td>
 		</tr>
-    <tr id="imageRow">
-      <!-- 画像はJavaScriptで動的に生成 -->
-    </tr>
-  </table>
+		<tr id="imageRow">
+			<!-- 画像はJavaScriptで動的に生成 -->
+		</tr>
+	</table>
+	<div id="imageContainer">
+		<ul class="nav nav-tabs" id="imageTab" role="tablist">
+			<!-- タブはJavaScriptで動的に生成 -->
+		</ul>
+		<div class="tab-content" id="imageTabContent">
+			<!-- タブの内容はJavaScriptで動的に生成 -->
+		</div>
+	</div>
   
-  <div id="imageContainer">
-    <!-- 画像はJavaScriptで動的に生成 -->
-  </div>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
   
   <script>
-    fetch('images.json')
-      .then(response => response.json())
-      .then(images => {
-        const imageRow = document.getElementById('imageRow');
-        const imageContainer = document.getElementById('imageContainer');
+fetch('images.json')
+  .then(response => response.json())
+  .then(images => {
+    const imageTab = document.getElementById('imageTab');
+    const imageTabContent = document.getElementById('imageTabContent');
+    
+    const groups = [...new Set(images.map(image => image.group))];  // グループの一覧を取得
+    groups.forEach((group, i) => {
+      // タブの生成
+      const tab = document.createElement('li');
+      tab.className = 'nav-item';
+      const link = document.createElement('a');
+      link.className = 'nav-link' + (i === 0 ? ' active' : '');  // 最初のタブをアクティブに設定
+      link.id = 'tab-' + group;
+      link.href = '#content-' + group;
+      link.role = 'tab';
+      link.textContent = group;
+      tab.appendChild(link);
+      imageTab.appendChild(tab);
+      
+      // タブの内容の生成
+      const content = document.createElement('div');
+      content.className = 'tab-pane fade' + (i === 0 ? ' show active' : '');  // 最初のタブの内容を表示
+      content.id = 'content-' + group;
+      content.role = 'tabpanel';
+      images.filter(image => image.group === group).forEach((image, j) => {
+        const img = document.createElement('img');
+        img.id = 'image-' + group + '-' + j;
+        img.src = image.url;
+        img.alt = image.name;
+        img.draggable = true;  // ドラッグ可能に設定
+        img.style.maxHeight = '100px';
+        img.style.maxWidth = '100px';
+        content.appendChild(img);
         
-        images.forEach((image, i) => {
-          // 画像の生成
-          const img = document.createElement('img');
-          img.id = 'image' + i;
-          img.src = image.url;
-          img.alt = image.name;
-          img.draggable = true;  // ドラッグ可能に設定
-          img.style.maxHeight = '100px';
-          img.style.maxWidth = '100px';
-          imageContainer.appendChild(img);
-          
-          // ドラッグ開始時の処理
-          img.addEventListener('dragstart', function(event) {
-            event.dataTransfer.setData('text/plain', this.src);
-          });
+        // ドラッグ開始時の処理
+        img.addEventListener('dragstart', function(event) {
+          event.dataTransfer.setData('text/plain', this.src);
         });
-        
-        for (let i = 0; i < 6; i++) {
-          // 画像の生成
-          const imageCell = document.createElement('td');
-          const img = document.createElement('img');
-          img.id = 'selectedImage' + i;
-          img.src = images[0].url;  // 初期画像の設定
-          img.alt = '選択した画像';
-          img.style.maxHeight = '100%';
-          img.style.maxWidth = '100%';
-          imageCell.appendChild(img);
-          imageRow.appendChild(imageCell);
-          
-          // ドロップ時の処理
-          img.addEventListener('dragover', function(event) {
-            event.preventDefault();
-          });
-          img.addEventListener('drop', function(event) {
-            event.preventDefault();
-            this.src = event.dataTransfer.getData('text/plain');
-          });
-        }
-      })
-      .catch(error => console.error('Error:', error));
+      });
+      imageTabContent.appendChild(content);
+    });
+    
+    // 省略
+  })
+  .catch(error => console.error('Error:', error));
   </script>
 </body>
 </html>
