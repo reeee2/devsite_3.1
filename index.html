@@ -147,6 +147,10 @@
 				imageCell.appendChild(img);
 				imageRow.appendChild(imageCell);
 				
+				// 画像選択時の処理
+    select.addEventListener('change', function() {
+					img.src = this.value;
+					});
 				// ドロップ時の処理
 				img.addEventListener('dragover', function(event) {
 					event.preventDefault();
