@@ -4,35 +4,50 @@
 	<title>画像選択</title>
 </head>
 <body>
-	<select id="imageSelect">
-	</select>
 
-	<div id="imageDisplay">
-		<img id="selectedImage" src="" alt="選択した画像">
-	</div>
-
+	<table>
+		<tr id="selectRow">
+			<!-- 選択ボックスはJavaScriptで動的に生成 -->
+		</tr>
+		<tr id="imageRow">
+			<!-- 画像はJavaScriptで動的に生成 -->
+		</tr>
+	</table>
 	<script>
 		fetch('images.json')
 			.then(response => response.json())
 			.then(images => {
-				const select = document.getElementById('imageSelect');
-				images.forEach(image => {
-					const option = document.createElement('option');
-					option.value = image.url;
-					option.textContent = image.name;
-					select.appendChild(option);
-				});
+				const selectRow = document.getElementById('selectRow');
+				const imageRow = document.getElementById('imageRow');
 				
-				// 初期画像の設定
-				if (images.length > 0) {
-					document.getElementById('selectedImage').src = images[0].url;
+				for (let i = 0; i < 6; i++) {
+					// 選択ボックスの生成
+					const selectCell = document.createElement('td');
+					const select = document.createElement('select');
+					select.id = 'imageSelect' + i;
+					images.forEach(image => {
+						const option = document.createElement('option');
+						option.value = image.url;
+						option.textContent = image.name;
+						select.appendChild(option);
+					});
+					selectCell.appendChild(select);
+					selectRow.appendChild(selectCell);
+					
+					// 画像の生成
+					const imageCell = document.createElement('td');
+					const img = document.createElement('img');
+					img.id = 'selectedImage' + i;
+					img.src = images[0].url;  // 初期画像の設定
+					img.alt = '選択した画像';
+					imageCell.appendChild(img);
+					imageRow.appendChild(imageCell);
+					
+					// 画像選択時の処理
+					select.addEventListener('change', function() {
+						img.src = this.value;
+					});
 				}
-				
-				// 画像選択時の処理
-				select.addEventListener('change', function() {
-					const selectedImage = this.value;
-					document.getElementById('selectedImage').src = selectedImage;
-				});
 			})
 			.catch(error => console.error('Error:', error));
 	</script>
