@@ -24,7 +24,10 @@
 			width: 100%;
 			justify-content: flex-start;
 		}
-		
+		.nav-item {
+			list-style-type: none;  /* マーカーを削除 */
+			width: 100px;
+		}
 	</style>
 </head>
 <body>
@@ -106,7 +109,8 @@
 				const imageCell = document.createElement('td');
 				const img = document.createElement('img');
 				img.id = 'selectedImage' + i;
-				img.src = images[0].url;  // 初期画像の設定
+				let filteredImages = images.filter(image => image.group === group);
+				img.src = filteredImages[i].set[0].url;  // 初期画像の設定
 				img.alt = '選択した画像';
 				img.style.maxHeight = '100%';
 				img.style.maxWidth = '100%';
