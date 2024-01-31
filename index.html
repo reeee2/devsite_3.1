@@ -18,6 +18,10 @@
 		#myTable td:nth-child(2n) {
 			border-right: 2px solid black;  /* 2列ごとに線を追加 */
 		}
+		#imageTab{
+			margin-bottom: 10px;
+		
+		}
 	</style>
 </head>
 <body>
@@ -48,16 +52,18 @@
 		fetch('images.json')
 			.then(response => response.json())
 			.then(images => {
-				const imageTab = document.getElementById('imageTab');
+			
+			const imageTab = document.getElementById('imageTab');
 			const imageTabContent = document.getElementById('imageTabContent');
 				
 			const groups = [...new Set(images.map(image => image.group))];  // グループの一覧を取得
 			groups.forEach((group, i) => {
 				// タブの生成
+				
 				const tab = document.createElement('li');
 				tab.className = 'nav-item';
 				const link = document.createElement('a');
-				link.className = 'nav-link' + (i === 0 ? ' active' : '');  // 最初のタブをアクティブに設定
+				link.className = 'nav-link btn btn-primary' + (i === 0 ? ' active' : '');  // 最初のタブをアクティブに設定
 				link.id = 'tab-' + group;
 				link.href = '#content-' + group;
 				link.role = 'tab';
@@ -113,6 +119,21 @@
 			}
 		})
 		.catch(error => console.error('Error:', error));
+		
+		// タブのクリックイベント
+		link.addEventListener('click', function(event) {
+		  event.preventDefault();  // デフォルトのリンククリック動作を防ぐ
+		
+		  // 全てのタブから 'show active' クラスを削除
+		  const tabs = document.getElementsByClassName('tab-pane');
+		  for (let tab of tabs) {
+		    tab.className = tab.className.replace(' show active', '');
+		  }
+		
+		  // クリックされたタブに 'show active' クラスを設定
+		  const content = document.getElementById('content-' + group);
+		  content.className += ' show active';
+		});
 	</script>
 </body>
 </html>
