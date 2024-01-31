@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>画像選択</title>
-		<style>
-		#myTable {
+  <title>画像選択</title>
+  <style>
+    #myTable {
 			width: 100%;
 			height: 200px;
 			border: 1px solid black;
@@ -17,80 +17,72 @@
 		#myTable td:nth-child(2n) {
 			border-right: 2px solid black;  /* 2列ごとに線を追加 */
 		}
-	</style>
-	
+  </style>
 </head>
 <body>
-
-	<table id="myTable">
-		<tr id="headerRow">
+  <table id="myTable">
+    <tr id="headerRow">
 			<!-- ヘッダー行を追加 -->
 			<td colspan="2">前衛</td>
 			<td colspan="2">中衛</td>
 			<td colspan="2">後衛</td>
 		</tr>
-		<tr id="selectRow">
-			<!-- 選択ボックスはJavaScriptで動的に生成 -->
-		</tr>
-		<tr id="imageRow">
-			<!-- 画像はJavaScriptで動的に生成 -->
-		</tr>
-	</table>
-	
-	<script>
-		fetch('images.json')
-			.then(response => response.json())
-			.then(images => {
-				const selectRow = document.getElementById('selectRow');
-				const imageRow = document.getElementById('imageRow');
-				
-				for (let i = 0; i < 6; i++) {
-					// 選択ボックスの生成
-					const selectCell = document.createElement('td');
-					const select = document.createElement('select');
-					select.id = 'imageSelect' + i;
-					// グループ名を取得
-					const groupNames = [...new Set(images.map(image => image.group))];
-
-					groupNames.forEach(groupName => {
-						// グループの生成
-						const optgroup = document.createElement('optgroup');
-						optgroup.label = groupName;  // グループ名を設定
-						
-						// 同じグループの画像を取得
-						const groupImages = images.filter(image => image.group === groupName);
-						
-						groupImages.forEach(image => {
-						  const option = document.createElement('option');
-						  option.value = image.url;
-						  option.textContent = image.name;
-						  optgroup.appendChild(option);  // オプションをグループに追加
-						});
-						
-						select.appendChild(optgroup);  // グループを選択ボックスに追加
-					});
-					
-					selectCell.appendChild(select);
-					selectRow.appendChild(selectCell);
-					
-					// 画像の生成
-					const imageCell = document.createElement('td');
-					const img = document.createElement('img');
-					img.id = 'selectedImage' + i;
-					img.src = images[0].url;  // 初期画像の設定
-					img.alt = '選択した画像';
-					img.style.maxHeight = '100%';
-					img.style.maxWidth = '100%';
-					imageCell.appendChild(img);
-					imageRow.appendChild(imageCell);
-					
-					// 画像選択時の処理
-					select.addEventListener('change', function() {
-						img.src = this.value;
-					});
-				}
-			})
-			.catch(error => console.error('Error:', error));
-	</script>
+    <tr id="imageRow">
+      <!-- 画像はJavaScriptで動的に生成 -->
+    </tr>
+  </table>
+  
+  <div id="imageContainer">
+    <!-- 画像はJavaScriptで動的に生成 -->
+  </div>
+  
+  <script>
+    fetch('images.json')
+      .then(response => response.json())
+      .then(images => {
+        const imageRow = document.getElementById('imageRow');
+        const imageContainer = document.getElementById('imageContainer');
+        
+        images.forEach((image, i) => {
+          // 画像の生成
+          const img = document.createElement('img');
+          img.id = 'image' + i;
+          img.src = image.url;
+          img.alt = image.name;
+          img.draggable = true;  // ドラッグ可能に設定
+          img.style.maxHeight = '100px';
+          img.style.maxWidth = '100px';
+          imageContainer.appendChild(img);
+          
+          // ドラッグ開始時の処理
+          img.addEventListener('dragstart', function(event) {
+            event.dataTransfer.setData('text/plain', this.src);
+          });
+        });
+        
+        for (let i = 0; i < 6; i++) {
+          // 画像の生成
+          const imageCell = document.createElement('td');
+          const img = document.createElement('img');
+          img.id = 'selectedImage' + i;
+          img.src = images[0].url;  // 初期画像の設定
+          img.alt = '選択した画像';
+          img.style.maxHeight = '100%';
+          img.style.maxWidth = '100%';
+          imageCell.appendChild(img);
+          imageRow.appendChild(imageCell);
+          
+          // ドロップ時の処理
+          img.addEventListener('dragover', function(event) {
+            event.preventDefault();
+          });
+          img.addEventListener('drop', function(event) {
+            event.preventDefault();
+            this.src = event.dataTransfer.getData('text/plain');
+          });
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  </script>
 </body>
 </html>
