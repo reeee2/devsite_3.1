@@ -20,7 +20,13 @@
 		}
 		#imageTab{
 			margin-bottom: 10px;
-		
+			display: flex;
+			width: 100%;
+			justify-content: flex-start;
+		}
+		.link-size {
+			width: 100px;
+			height: 50px;
 		}
 	</style>
 </head>
@@ -69,6 +75,7 @@
 				link.href = '#content-' + group;
 				link.role = 'tab';
 				link.setAttribute('data-toggle', 'tab');  // タブ切り替えを有効にする
+				link.classList.add('link-size');
 				link.textContent = group;
 				tab.appendChild(link);
 				imageTab.appendChild(tab);
@@ -128,7 +135,7 @@
 			// 全てのタブから 'show active' クラスを削除
 			const tabs = document.getElementsByClassName('tab-pane');
 			for (let tab of tabs) {
-				tab.className = tab.className.replace(' show active', '');
+				tab.style.display ="none";
 			}
 		
 			// クリックされたタブに 'show active' クラスを設定
