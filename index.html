@@ -4,14 +4,18 @@
 	<title>画像選択</title>
 		<style>
 		#myTable {
-			width: 500px;
+			width: 100%;
 			height: 200px;
 			border: 1px solid black;
 			border-collapse: collapse;
+			text-align: center;
 		}
 		#myTable td {
 			border: 1px solid black;  /* 各セルに線を追加 */
 			border-collapse: collapse;
+		}
+		#myTable td:nth-child(2n) {
+			border-right: 2px solid black;  /* 2列ごとに線を追加 */
 		}
 	</style>
 	
@@ -19,6 +23,12 @@
 <body>
 
 	<table id="myTable">
+		<tr id="headerRow">
+			<!-- ヘッダー行を追加 -->
+			<td colspan="2">前衛</td>
+			<td colspan="2">中衛</td>
+			<td colspan="2">後衛</td>
+		</tr>
 		<tr id="selectRow">
 			<!-- 選択ボックスはJavaScriptで動的に生成 -->
 		</tr>
@@ -39,12 +49,27 @@
 					const selectCell = document.createElement('td');
 					const select = document.createElement('select');
 					select.id = 'imageSelect' + i;
-					images.forEach(image => {
-						const option = document.createElement('option');
-						option.value = image.url;
-						option.textContent = image.name;
-						select.appendChild(option);
+					// グループ名を取得
+					const groupNames = [...new Set(images.map(image => image.group))];
+
+					groupNames.forEach(groupName => {
+						// グループの生成
+						const optgroup = document.createElement('optgroup');
+						optgroup.label = groupName;  // グループ名を設定
+						
+						// 同じグループの画像を取得
+						const groupImages = images.filter(image => image.group === groupName);
+						
+						groupImages.forEach(image => {
+						  const option = document.createElement('option');
+						  option.value = image.url;
+						  option.textContent = image.name;
+						  optgroup.appendChild(option);  // オプションをグループに追加
+						});
+						
+						select.appendChild(optgroup);  // グループを選択ボックスに追加
 					});
+					
 					selectCell.appendChild(select);
 					selectRow.appendChild(selectCell);
 					
