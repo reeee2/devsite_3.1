@@ -61,23 +61,21 @@
 				
 			const groups = [...new Set(images.map(image => image.group))];  // グループの一覧を取得
 			groups.forEach((group, i) => {
-				// タブの生成
-				
+				//タブの生成
 				const tab = document.createElement('li');
 				tab.className = 'nav-item';
 				const link = document.createElement('a');
-				
-				link.className = 'nav-link btn btn-primary' + (i === 0 ? ' active' : '');  // 最初のタブをアクティブに設定
+				link.className = 'nav-link' + (i === 0 ? ' active' : '');  // 最初のタブをアクティブに設定
 				link.id = 'tab-' + group;
 				link.href = '#content-' + group;
 				link.role = 'tab';
 				link.setAttribute('data-toggle', 'tab');  // タブ切り替えを有効にする
 				link.textContent = group;
-				link.style.width = '100px';
-				link.style.height = '50px';
+				link.style.display = 'inline-block'; 
+				link.style.width = '100px';  // タブの幅を設定
+				link.style.height = '50px';  // タブの高さを設定
 				tab.appendChild(link);
 				imageTab.appendChild(tab);
-				
 				// タブの内容の生成
 				const content = document.createElement('div');
 				content.style.display = (i === 0 ? ' block' : 'none');// 最初のタブの内容を表示
@@ -99,7 +97,6 @@
 						event.dataTransfer.setData('text/plain', this.src);
 					});
 				});
-				imageTabContent.appendChild(content);
 			});
 					
 			for (let i = 0; i < 6; i++) {
