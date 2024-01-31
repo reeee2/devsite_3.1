@@ -1,9 +1,40 @@
-<select id="imageSelect">
-  <option value="image1.jpg">画像1</option>
-  <option value="image2.jpg">画像2</option>
-  <option value="image3.jpg">画像3</option>
-</select>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>画像選択</title>
+</head>
+<body>
+	<select id="imageSelect">
+	</select>
 
-<div id="imageDisplay">
-  <img id="selectedImage" src="" alt="選択した画像">
-</div>
+	<div id="imageDisplay">
+		<img id="selectedImage" src="" alt="選択した画像">
+	</div>
+
+	<script>
+		fetch('http://localhost:3000/images')
+			.then(response => response.json())
+			.then(images => {
+				const select = document.getElementById('imageSelect');
+				images.forEach(image => {
+					const option = document.createElement('option');
+					option.value = image;
+					option.textContent = image;
+					select.appendChild(option);
+				});
+
+				// 初期画像の設定
+				if (images.length > 0) {
+					document.getElementById('selectedImage').src = './image/' + images[0];
+				}
+
+				// 画像選択時の処理
+				select.addEventListener('change', function() {
+					const selectedImage = this.value;
+					document.getElementById('selectedImage').src = './image/' + selectedImage;
+				});
+			})
+			.catch(error => console.error('Error:', error));
+	</script>
+</body>
+</html>
