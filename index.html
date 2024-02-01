@@ -115,6 +115,7 @@
 				const selectCell = document.createElement('td');
 				const select = document.createElement('select');
 				select.id = 'imageSelect' + i;
+				select.style.width = '150px';
 				
 				// グループ名を取得
 				const groupNames = [...new Set(images.map(image => image.group))];
@@ -128,8 +129,7 @@
 					groupImages.forEach(image => {
 						const option = document.createElement('option');
 						option.value = image.url;
-						// テキストが一定の長さ以上の場合は、末尾に '...' を追加
-						option.textContent = image.name.length > 10 ? image.name.substring(0, 10) + '...' : image.name;
+						option.textContent = image.name;
 						optgroup.appendChild(option);  // オプションをグループに追加
 					});
 					select.appendChild(optgroup);  // グループを選択ボックスに追加
@@ -141,7 +141,7 @@
 				const imageCell = document.createElement('td');
 				const img = document.createElement('img');
 				img.id = 'selectedImage' + i;
-				img.src = images[i * 8].url;  // 初期画像の設定
+				img.src = images[i].url;  // 初期画像の設定
 				img.alt = '選択した画像';
 				img.style.maxHeight = '100%';
 				img.style.maxWidth = '100%';
@@ -158,8 +158,8 @@
 				});
 				img.addEventListener('drop', function(event) {
 					event.preventDefault();
-					this.src = event.dataTransfer.getData('text/plain');
-					 this.src = droppedImageUrl;
+					const droppedImageUrl = event.dataTransfer.getData('text/plain');
+					this.src = droppedImageUrl;
 					 // 選択ボックスの値も更新
 					const options = select.options;
 					for (let j = 0; j < options.length; j++) {
