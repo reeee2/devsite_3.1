@@ -136,7 +136,7 @@
 				});
 				
 				let groupPicsName = groupNames[i];
-				const groupImages = images.filter(image => image.group === groupName);
+				const groupImages = images.filter(image => image.group === groupPicsName);
 				
 				
 				select.value = groupImages[0].url;
@@ -166,11 +166,13 @@
 				img.addEventListener('drop', function(event) {
 					event.preventDefault();
 					const droppedImageUrl = event.dataTransfer.getData('text/plain');
-					const droppedImageName = event.name;
 					this.src = droppedImageUrl;
 					// imageSelectの値も更新のため、列を取得
 					const col = this.parentNode.cellIndex;
 					const select = document.getElementById('imageSelect' + col);
+					const options = select.options;
+					//options.valueとdroppedImageUrlが一致するオプションを選択
+					const droppedImageName = [...options].find(option => option.value === droppedImageUrl).value;
 					select.value = droppedImageName;
 					
 					
