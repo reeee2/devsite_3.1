@@ -112,29 +112,30 @@
 					
 			for (let i = 0; i < 6; i++) {
 				// 選択ボックスの生成
-    const selectCell = document.createElement('td');
+				const selectCell = document.createElement('td');
 				const select = document.createElement('select');
 				select.id = 'imageSelect' + i;
 				
 				// グループ名を取得
-    const groupNames = [...new Set(images.map(image => image.group))];
+				const groupNames = [...new Set(images.map(image => image.group))];
 				
 				groupNames.forEach(groupName => {
 					// グループの生成
-     const optgroup = document.createElement('optgroup');
-				 optgroup.label = groupName;  // グループ名を設定
-     // 同じグループの画像を取得
-     const groupImages = images.filter(image => image.group === groupName);
-     groupImages.forEach(image => {
-	     const option = document.createElement('option');
-	     option.value = image.url;
-	     option.textContent = image.name;
-				  optgroup.appendChild(option);  // オプションをグループに追加
-     });
-     select.appendChild(optgroup);  // グループを選択ボックスに追加
-    });
-    selectCell.appendChild(select);
-    selectRow.appendChild(selectCell)
+					const optgroup = document.createElement('optgroup');
+					optgroup.label = groupName;  // グループ名を設定
+					// 同じグループの画像を取得
+					const groupImages = images.filter(image => image.group === groupName);
+					groupImages.forEach(image => {
+						const option = document.createElement('option');
+						option.value = image.url;
+						// テキストが一定の長さ以上の場合は、末尾に '...' を追加
+						option.textContent = image.name.length > 10 ? image.name.substring(0, 10) + '...' : image.name;
+						optgroup.appendChild(option);  // オプションをグループに追加
+					});
+					select.appendChild(optgroup);  // グループを選択ボックスに追加
+				});
+				selectCell.appendChild(select);
+				selectRow.appendChild(selectCell)
 
 				// 画像の生成
 				const imageCell = document.createElement('td');
@@ -148,9 +149,9 @@
 				imageRow.appendChild(imageCell);
 				
 				// 画像選択時の処理
-    select.addEventListener('change', function() {
+				select.addEventListener('change', function() {
 					img.src = this.value;
-					});
+				});
 				// ドロップ時の処理
 				img.addEventListener('dragover', function(event) {
 					event.preventDefault();
@@ -158,6 +159,19 @@
 				img.addEventListener('drop', function(event) {
 					event.preventDefault();
 					this.src = event.dataTransfer.getData('text/plain');
+					 this.src = droppedImageUrl;
+					 // 選択ボックスの値も更新
+					const options = select.options;
+					for (let j = 0; j < options.length; j++) {
+						const optgroup = options[j];
+						for (let k = 0; k < optgroup.length; k++) {
+							const option = optgroup[k];
+							if (option.value === droppedImageUrl) {
+								select.value = droppedImageUrl;
+								break;
+							}
+						}
+					}
 				});
 			}
 		})
